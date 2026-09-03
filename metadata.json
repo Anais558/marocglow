@@ -1,0 +1,6 @@
+{
+  "name": "Maroc Glow - Vente de Produits Marocains en Gros et en Détail",
+  "description": "Plateforme grossiste de produits marocains naturels en gros : huile d'argan, savon noir, eau de rose, gommages et cosmétiques avec tarifs grossistes et gestion des stocks.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
