@@ -1,4 +1,5 @@
 import { Product, Category, Order, OrderStatus, TrackingStep } from '../types';
+import { PRODUCTS, CATEGORIES, INITIAL_ORDERS } from '../data/products';
 
 export const api = {
   // Products
@@ -7,7 +8,7 @@ export const api = {
       const res = await fetch('/api/products');
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (Array.isArray(data) && data.length > 0) {
         try {
           localStorage.setItem('maroc_glow_products', JSON.stringify(data));
         } catch {
@@ -15,14 +16,24 @@ export const api = {
         }
         return data;
       }
-      return [];
+      // If server returned empty, fallback to local storage or bundled products
+      const saved = localStorage.getItem('maroc_glow_products');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return PRODUCTS;
     } catch (err) {
-      console.warn('Backend API unavailable for products, fallback to localStorage cache:', err);
+      console.warn('Backend API unavailable for products, fallback to bundled products:', err);
       try {
         const saved = localStorage.getItem('maroc_glow_products');
-        return saved ? JSON.parse(saved) : [];
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+        return PRODUCTS;
       } catch {
-        return [];
+        return PRODUCTS;
       }
     }
   },
@@ -70,14 +81,23 @@ export const api = {
         }
         return data;
       }
-      return [];
+      const saved = localStorage.getItem('maroc_glow_categories');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return CATEGORIES;
     } catch (err) {
-      console.warn('Backend API unavailable for categories, fallback to localStorage cache:', err);
+      console.warn('Backend API unavailable for categories, fallback to default categories:', err);
       try {
         const saved = localStorage.getItem('maroc_glow_categories');
-        return saved ? JSON.parse(saved) : [];
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+        return CATEGORIES;
       } catch {
-        return [];
+        return CATEGORIES;
       }
     }
   },
@@ -116,7 +136,7 @@ export const api = {
       const res = await fetch('/api/orders');
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (Array.isArray(data) && data.length > 0) {
         try {
           localStorage.setItem('maroc_glow_orders', JSON.stringify(data));
         } catch {
@@ -124,14 +144,23 @@ export const api = {
         }
         return data;
       }
-      return [];
+      const saved = localStorage.getItem('maroc_glow_orders');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return INITIAL_ORDERS;
     } catch (err) {
-      console.warn('Backend API unavailable for orders, fallback to localStorage cache:', err);
+      console.warn('Backend API unavailable for orders, fallback to default orders:', err);
       try {
         const saved = localStorage.getItem('maroc_glow_orders');
-        return saved ? JSON.parse(saved) : [];
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+        return INITIAL_ORDERS;
       } catch {
-        return [];
+        return INITIAL_ORDERS;
       }
     }
   },

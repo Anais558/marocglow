@@ -79,9 +79,9 @@ export default function App() {
         api.getCategories(),
         api.getOrders(),
       ]);
-      if (Array.isArray(dbProducts)) setProducts(dbProducts);
+      if (Array.isArray(dbProducts) && dbProducts.length > 0) setProducts(dbProducts);
       if (Array.isArray(dbCategories) && dbCategories.length > 0) setCategories(dbCategories);
-      if (Array.isArray(dbOrders)) setOrders(dbOrders);
+      if (Array.isArray(dbOrders) && dbOrders.length > 0) setOrders(dbOrders);
       const nowStr = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       setLastSyncTime(nowStr);
     } catch (err) {
@@ -112,9 +112,9 @@ export default function App() {
           api.getOrders(),
         ]);
         if (isMounted) {
-          if (Array.isArray(dbProducts)) setProducts(dbProducts);
+          if (Array.isArray(dbProducts) && dbProducts.length > 0) setProducts(dbProducts);
           if (Array.isArray(dbCategories) && dbCategories.length > 0) setCategories(dbCategories);
-          if (Array.isArray(dbOrders)) setOrders(dbOrders);
+          if (Array.isArray(dbOrders) && dbOrders.length > 0) setOrders(dbOrders);
           setLastSyncTime(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
         }
       } catch (err) {

@@ -5,6 +5,7 @@ import { db } from './src/db/index';
 import { products, categories, orders, users } from './src/db/schema';
 import { seedDatabaseIfEmpty } from './src/db/seed';
 import { eq, desc } from 'drizzle-orm';
+import { PRODUCTS, CATEGORIES } from './src/data/products';
 
 const app = express();
 const PORT = 3000;
@@ -20,15 +21,18 @@ app.get('/api/health', (req, res) => {
 app.get('/api/products', async (req, res) => {
   try {
     const list = await db.select().from(products).orderBy(desc(products.createdAt));
-    // Transform rating to number if needed
-    const formatted = list.map((p) => ({
-      ...p,
-      rating: parseFloat(p.rating as string) || 4.9,
-    }));
-    res.json(formatted);
+    if (list && list.length > 0) {
+      const formatted = list.map((p) => ({
+        ...p,
+        rating: parseFloat(p.rating as string) || 4.9,
+      }));
+      return res.json(formatted);
+    }
+    // Fallback to bundled products if database is empty
+    res.json(PRODUCTS);
   } catch (error) {
-    console.error('Error fetching products from database:', error);
-    res.status(500).json({ error: 'Failed to fetch products' });
+    console.error('Error fetching products from database, serving fallback catalog:', error);
+    res.json(PRODUCTS);
   }
 });
 
