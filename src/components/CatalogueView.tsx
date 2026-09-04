@@ -97,40 +97,40 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
   }, [categories, products]);
 
   return (
-    <div className="pb-20">
+    <div className="pb-20 w-full max-w-full overflow-x-hidden">
       {/* Grand bloc Hero & Catalogue Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#F5EFEB] via-[#FAF7F2] to-[#FAF7F2] pt-10 pb-12 border-b border-[#EFE6D8]">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#F5EFEB] via-[#FAF7F2] to-[#FAF7F2] pt-8 sm:pt-10 pb-10 sm:pb-12 border-b border-[#EFE6D8] w-full max-w-full">
         {/* Subtle decorative Moroccan pattern / ambient aura */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#B8683C]/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-[#B8683C]/5 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10 w-full">
           {/* Main title block */}
-          <div className="text-center max-w-3xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-2 bg-white/90 text-[#B8683C] text-xs font-bold uppercase tracking-[0.16em] px-4 py-1.5 rounded-full mb-4 border border-[#EFE6D8] shadow-xs">
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-2 bg-white/90 text-[#B8683C] text-xs font-bold uppercase tracking-[0.16em] px-3.5 sm:px-4 py-1.5 rounded-full mb-3 sm:mb-4 border border-[#EFE6D8] shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>Grossiste • Vente en Gros</span>
             </div>
 
-            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#231B15] tracking-tight leading-[1.15] mb-4">
+            <h1 className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#231B15] tracking-tight leading-[1.15] mb-3 sm:mb-4">
               Produits Marocains en Gros
             </h1>
 
-            <p className="text-sm sm:text-base md:text-lg text-[#7D7368] font-medium max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xs sm:text-base md:text-lg text-[#7D7368] font-medium max-w-2xl mx-auto leading-relaxed">
               Huiles d'argan pures certifiées, savons noirs, gommages, eaux florales et cosmétiques naturels du Maroc. Tarifs grossistes avantageux par carton et lot pour revendeurs, boutiques, spas et instituts.
             </p>
 
             {/* Feature Pills */}
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full border border-[#EFE6D8] shadow-2xs text-xs font-medium text-[#231B15]">
+            <div className="mt-5 sm:mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white px-3 py-1.5 rounded-full border border-[#EFE6D8] shadow-2xs text-[11px] sm:text-xs font-medium text-[#231B15]">
                 <Leaf className="w-3.5 h-3.5 text-[#2E6349]" />
                 <span>100% Naturel & Origine Maroc</span>
               </div>
-              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full border border-[#EFE6D8] shadow-2xs text-xs font-medium text-[#231B15]">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white px-3 py-1.5 rounded-full border border-[#EFE6D8] shadow-2xs text-[11px] sm:text-xs font-medium text-[#231B15]">
                 <Shield className="w-3.5 h-3.5 text-[#B8683C]" />
-                <span>Prix Grossiste & Approvisionnement Direct</span>
+                <span>Prix Grossiste & Direct</span>
               </div>
-              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full border border-[#EFE6D8] shadow-2xs text-xs font-medium text-[#231B15]">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white px-3 py-1.5 rounded-full border border-[#EFE6D8] shadow-2xs text-[11px] sm:text-xs font-medium text-[#231B15]">
                 <span className="w-2 h-2 rounded-full bg-[#D4AF37]"></span>
                 <span className="font-bold text-[#B8683C]">{products.length} références</span>
                 <span className="text-[#7D7368]">disponibles</span>
@@ -139,16 +139,16 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
           </div>
 
           {/* Search & Filters interactive bar */}
-          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#EFE6D8] shadow-md max-w-4xl mx-auto space-y-5">
+          <div className="bg-white p-3.5 sm:p-6 rounded-2xl border border-[#EFE6D8] shadow-md max-w-4xl mx-auto space-y-4 sm:space-y-5 w-full">
             {/* Search Input with live search */}
             <div className="relative">
-              <Search className="w-5 h-5 text-[#B8683C] absolute left-4 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 sm:w-5 h-4 sm:h-5 text-[#B8683C] absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Rechercher un produit grossiste (argan, savon noir, eau de rose, nigelle, ghassoul...)"
-                className="w-full pl-12 pr-10 py-3.5 bg-[#FAF7F2] border border-[#EFE6D8] rounded-xl text-sm text-[#231B15] placeholder-[#A89F93] focus:outline-none focus:ring-2 focus:ring-[#B8683C]/30 focus:border-[#B8683C] focus:bg-white transition-all font-medium"
+                placeholder="Rechercher un produit grossiste (argan, savon noir, eau de rose...)"
+                className="w-full pl-10 sm:pl-12 pr-10 py-3 sm:py-3.5 bg-[#FAF7F2] border border-[#EFE6D8] rounded-xl text-xs sm:text-sm text-[#231B15] placeholder-[#A89F93] focus:outline-none focus:ring-2 focus:ring-[#B8683C]/30 focus:border-[#B8683C] focus:bg-white transition-all font-medium"
               />
               {searchQuery && (
                 <button
@@ -161,8 +161,8 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
             </div>
 
             {/* Categories horizontal scroll pills */}
-            <div>
-              <div className="text-xs font-bold uppercase tracking-[0.14em] text-[#7D7368] mb-3 flex items-center justify-between">
+            <div className="w-full">
+              <div className="text-xs font-bold uppercase tracking-[0.14em] text-[#7D7368] mb-2.5 flex items-center justify-between">
                 <span>Rayons & Catégories Grossistes :</span>
                 {selectedCategory !== 'all' && (
                   <button
@@ -174,7 +174,7 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
                 )}
               </div>
 
-              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-none w-full max-w-full touch-pan-x">
                 {sortedCategories.map((cat) => {
                   const count =
                     cat.id === 'all'
@@ -257,11 +257,11 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
       </section>
 
       {/* Product Grid section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-8 sm:pt-12 w-full max-w-full">
         {/* Results Header Info */}
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#EFE6D8]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8 pb-4 border-b border-[#EFE6D8] w-full">
           <div>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#231B15]">
+            <h2 className="font-serif text-xl sm:text-3xl font-bold text-[#231B15]">
               {selectedCategory === 'all'
                 ? 'Nos Produits Disponibles'
                 : CATEGORIES.find((c) => c.slug === selectedCategory)?.name}
@@ -273,7 +273,7 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
           </div>
 
           {filteredProducts.length > 0 && (
-            <span className="text-xs font-semibold text-[#231B15] bg-white px-3.5 py-1.5 rounded-full flex items-center gap-1.5 border border-[#EFE6D8] shadow-2xs">
+            <span className="self-start sm:self-auto text-[11px] sm:text-xs font-semibold text-[#231B15] bg-white px-3 sm:px-3.5 py-1.5 rounded-full flex items-center gap-1.5 border border-[#EFE6D8] shadow-2xs">
               <CheckCircle2 className="w-3.5 h-3.5 text-[#B8683C]" />
               Tarifs en {currency === 'EUR' ? 'Euros (€)' : 'FCFA (XOF)'}
             </span>
@@ -282,7 +282,7 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
 
         {/* Product Cards Grid: 2 cols on mobile, 3 on tablet, 4 on desktop/pc */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5 lg:gap-6 w-full">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

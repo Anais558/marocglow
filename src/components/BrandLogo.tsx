@@ -5,6 +5,7 @@ interface BrandLogoProps {
   theme?: 'dark' | 'light' | 'auto';
   variant?: 'gold-dark' | 'gold-light' | 'emerald' | 'default';
   showText?: boolean;
+  hideTextOnMobile?: boolean;
   className?: string;
   logoSrc?: string;
 }
@@ -14,6 +15,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   theme = 'light',
   variant = 'gold-dark',
   showText = true,
+  hideTextOnMobile = true,
   className = '',
   logoSrc = '/logo.jpeg',
 }) => {
@@ -145,9 +147,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         </div>
       )}
 
-      {/* Brand Text if requested */}
+      {/* Brand Text if requested (hidden on telephone by default) */}
       {showText && (
-        <div className="flex flex-col text-left">
+        <div className={`${hideTextOnMobile ? 'hidden sm:flex' : 'flex'} flex-col text-left`}>
           <div className="flex items-center gap-1.5">
             <span
               className={`font-serif text-lg md:text-xl font-bold tracking-[0.16em] transition-colors ${

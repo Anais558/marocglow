@@ -30,18 +30,18 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-[#121110]/95 backdrop-blur-md border-b border-[#2A2420] transition-all">
       {/* Main navigation container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[74px]">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-center justify-between h-[64px] sm:h-[74px] w-full gap-2">
           {/* Brand Logo & Slogan */}
           <button
             onClick={() => {
               onNavigate('catalogue');
               setMobileMenuOpen(false);
             }}
-            className="flex items-center text-left group focus:outline-none cursor-pointer"
+            className="flex items-center text-left group focus:outline-none cursor-pointer shrink-0"
             aria-label="Retour à l'accueil Maroc Glow"
           >
-            <BrandLogo size="md" theme="dark" />
+            <BrandLogo size="md" theme="dark" hideTextOnMobile={true} />
           </button>
 
           {/* Desktop Navigation links */}
@@ -71,13 +71,13 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Right Action Tools: Currency Selector, Search trigger, Cart */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* Currency Selector (FCFA / EUR toggle) */}
-            <div className="inline-flex items-center bg-[#1E1916] rounded-full p-0.5 border border-[#3A322B] shadow-xs">
+            <div className="inline-flex items-center bg-[#1E1916] rounded-full p-0.5 border border-[#3A322B] shadow-xs shrink-0">
               <button
                 type="button"
                 onClick={() => onCurrencyChange('FCFA')}
-                className={`px-2.5 sm:px-3 py-1 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
+                className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer ${
                   currency === 'FCFA'
                     ? 'bg-[#B8683C] text-white shadow-xs'
                     : 'text-[#C4B7A5] hover:text-white'
@@ -89,14 +89,14 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => onCurrencyChange('EUR')}
-                className={`px-2.5 sm:px-3 py-1 rounded-full text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
                   currency === 'EUR'
                     ? 'bg-[#B8683C] text-white shadow-xs'
                     : 'text-[#C4B7A5] hover:text-white'
                 }`}
                 title="Afficher les prix en Euro (€)"
               >
-                <span>EUR (€)</span>
+                <span>EUR</span>
               </button>
             </div>
 
@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
             {onSearchClick && (
               <button
                 onClick={onSearchClick}
-                className="p-2 sm:p-2.5 rounded-full text-[#C4B7A5] hover:text-white hover:bg-[#1E1916] border border-transparent hover:border-[#3A322B] transition-colors focus:outline-none cursor-pointer"
+                className="p-1.5 sm:p-2.5 rounded-full text-[#C4B7A5] hover:text-white hover:bg-[#1E1916] border border-transparent hover:border-[#3A322B] transition-colors focus:outline-none cursor-pointer shrink-0"
                 title="Rechercher un produit"
                 aria-label="Rechercher"
               >
@@ -115,18 +115,18 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Shopping Cart Button */}
             <button
               onClick={onOpenCart}
-              className="relative px-3 sm:px-3.5 py-2 bg-[#B8683C] hover:bg-[#A3592F] text-white rounded-full transition-all active:scale-95 focus:outline-none flex items-center gap-2 group cursor-pointer shadow-md border border-[#D4AF37]/30"
+              className="relative px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-[#B8683C] hover:bg-[#A3592F] text-white rounded-full transition-all active:scale-95 focus:outline-none flex items-center gap-1.5 sm:gap-2 group cursor-pointer shadow-md border border-[#D4AF37]/30 shrink-0"
               aria-label={`Panier d'achat avec ${cartCount} articles`}
             >
               <ShoppingBag className="w-4 h-4 text-[#FDE047] group-hover:scale-110 transition-transform" />
               <span className="text-xs font-bold tracking-wider">
                 {cartCount > 0 ? (
-                  <span className="flex items-center gap-1.5">
+                  <span className="flex items-center gap-1">
                     <span>{cartCount}</span>
-                    <span className="hidden sm:inline opacity-80 font-normal">| {formatPrice(cartTotal, currency)}</span>
+                    <span className="hidden md:inline opacity-80 font-normal">| {formatPrice(cartTotal, currency)}</span>
                   </span>
                 ) : (
-                  <span>Panier</span>
+                  <span className="hidden xs:inline sm:inline">Panier</span>
                 )}
               </span>
             </button>
@@ -134,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Menu Toggle Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-[#FAF7F2] hover:bg-[#1E1916] focus:outline-none cursor-pointer"
+              className="md:hidden p-1.5 rounded-lg text-[#FAF7F2] hover:bg-[#1E1916] focus:outline-none cursor-pointer shrink-0"
               aria-label="Ouvrir le menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

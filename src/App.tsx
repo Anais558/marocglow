@@ -298,7 +298,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#231B15] font-sans selection:bg-[#B8683C]/20 selection:text-[#B8683C]">
+    <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#231B15] font-sans selection:bg-[#B8683C]/20 selection:text-[#B8683C] w-full max-w-full overflow-x-hidden">
       {/* Persistent Global Header */}
       <Header
         currentView={currentView}
@@ -318,7 +318,7 @@ export default function App() {
       />
 
       {/* Main View Router */}
-      <main className="flex-grow">
+      <main className="flex-grow w-full max-w-full overflow-x-hidden">
         {currentView === 'catalogue' && (
           <CatalogueView
             products={products}
