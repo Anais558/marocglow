@@ -31,6 +31,7 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        localStorage.removeItem('maroc_glow_products');
       }
       return PRODUCTS;
     } catch {
@@ -42,7 +43,12 @@ export default function App() {
   const [categories, setCategories] = useState<Category[]>(() => {
     try {
       const saved = localStorage.getItem('maroc_glow_categories');
-      return saved ? JSON.parse(saved) : CATEGORIES;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        localStorage.removeItem('maroc_glow_categories');
+      }
+      return CATEGORIES;
     } catch {
       return CATEGORIES;
     }
@@ -61,9 +67,13 @@ export default function App() {
   const [orders, setOrders] = useState<Order[]>(() => {
     try {
       const saved = localStorage.getItem('maroc_glow_orders');
-      return saved ? JSON.parse(saved) : [];
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return INITIAL_ORDERS;
     } catch {
-      return [];
+      return INITIAL_ORDERS;
     }
   });
 

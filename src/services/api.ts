@@ -7,6 +7,10 @@ export const api = {
     try {
       const res = await fetch('/api/products');
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Not JSON (static host fallback)');
+      }
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
         try {
@@ -21,15 +25,17 @@ export const api = {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        localStorage.removeItem('maroc_glow_products');
       }
       return PRODUCTS;
     } catch (err) {
-      console.warn('Backend API unavailable for products, fallback to bundled products:', err);
+      console.warn('Backend API unavailable (e.g. Netlify static hosting), using bundled catalog:', err);
       try {
         const saved = localStorage.getItem('maroc_glow_products');
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          localStorage.removeItem('maroc_glow_products');
         }
         return PRODUCTS;
       } catch {
@@ -72,6 +78,10 @@ export const api = {
     try {
       const res = await fetch('/api/categories');
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Not JSON (static host fallback)');
+      }
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
         try {
@@ -85,15 +95,17 @@ export const api = {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        localStorage.removeItem('maroc_glow_categories');
       }
       return CATEGORIES;
     } catch (err) {
-      console.warn('Backend API unavailable for categories, fallback to default categories:', err);
+      console.warn('Backend API unavailable for categories, using default categories:', err);
       try {
         const saved = localStorage.getItem('maroc_glow_categories');
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          localStorage.removeItem('maroc_glow_categories');
         }
         return CATEGORIES;
       } catch {
@@ -135,6 +147,10 @@ export const api = {
     try {
       const res = await fetch('/api/orders');
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Not JSON (static host fallback)');
+      }
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
         try {
@@ -148,15 +164,17 @@ export const api = {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        localStorage.removeItem('maroc_glow_orders');
       }
       return INITIAL_ORDERS;
     } catch (err) {
-      console.warn('Backend API unavailable for orders, fallback to default orders:', err);
+      console.warn('Backend API unavailable for orders, using local orders:', err);
       try {
         const saved = localStorage.getItem('maroc_glow_orders');
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          localStorage.removeItem('maroc_glow_orders');
         }
         return INITIAL_ORDERS;
       } catch {
@@ -173,10 +191,23 @@ export const api = {
         body: JSON.stringify(order),
       });
       if (res.ok) {
-        return await res.json();
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const saved = await res.json();
+          return saved;
+        }
       }
     } catch (err) {
-      console.warn('Failed to save order to server:', err);
+      console.warn('Failed to save order to server, saving locally:', err);
+    }
+    // Also persist into localStorage for tracking even on static host
+    try {
+      const saved = localStorage.getItem('maroc_glow_orders');
+      const currentOrders = saved ? JSON.parse(saved) : INITIAL_ORDERS;
+      const updated = [order, ...currentOrders.filter((o: Order) => o.id !== order.id)];
+      localStorage.setItem('maroc_glow_orders', JSON.stringify(updated));
+    } catch {
+      // ignore
     }
     return order;
   },
