@@ -197,7 +197,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               </div>
 
               {/* Product Title */}
-              <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-[#231B15] leading-tight mb-4">
+              <h1 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1E1916] leading-tight mb-4 tracking-tight">
                 {product.name}
               </h1>
 

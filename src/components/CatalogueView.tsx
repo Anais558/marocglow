@@ -155,7 +155,7 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Rechercher un produit grossiste (argan, savon noir, eau de rose...)"
-                className="w-full pl-10 sm:pl-12 pr-10 py-3 sm:py-3.5 bg-[#FAF7F2] border border-[#EFE6D8] rounded-xl text-xs sm:text-sm text-[#231B15] placeholder-[#A89F93] focus:outline-none focus:ring-2 focus:ring-[#B8683C]/30 focus:border-[#B8683C] focus:bg-white transition-all font-medium"
+                className="w-full pl-10 sm:pl-12 pr-10 py-3 sm:py-3.5 bg-[#FAF7F2] border border-[#EFE6D8] rounded-xl text-base sm:text-sm text-[#231B15] placeholder-[#A89F93] focus:outline-none focus:ring-2 focus:ring-[#B8683C]/30 focus:border-[#B8683C] focus:bg-white transition-all font-medium"
               />
               {searchQuery && (
                 <button

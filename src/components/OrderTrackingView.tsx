@@ -166,7 +166,7 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Numéro de commande (ex: MG-2026-XXXX) ou Téléphone..."
-              className="w-full pl-11 pr-4 py-3 bg-white border border-[#EFE6D8] rounded-xl text-xs sm:text-sm text-[#231B15] font-medium shadow-xs focus:outline-none focus:ring-1 focus:ring-[#B8683C]"
+              className="w-full pl-11 pr-4 py-3 bg-white border border-[#EFE6D8] rounded-xl text-base sm:text-sm text-[#231B15] font-medium shadow-xs focus:outline-none focus:ring-1 focus:ring-[#B8683C]"
             />
           </div>
           <button

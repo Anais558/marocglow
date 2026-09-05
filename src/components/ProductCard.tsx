@@ -58,8 +58,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Content Body */}
       <div className="flex flex-col flex-grow justify-between">
         <div>
-          {/* Product Name - responsive font size */}
-          <h3 className="font-serif text-xs sm:text-sm md:text-base font-bold text-[#231B15] line-clamp-2 group-hover:text-[#B8683C] transition-colors mb-1 min-h-[2rem] sm:min-h-[2.5rem] leading-snug">
+          {/* Product Name - clear, ultra-readable font */}
+          <h3 className="font-sans text-[13px] sm:text-[15px] font-bold text-[#1E1916] line-clamp-2 group-hover:text-[#B8683C] transition-colors mb-1.5 min-h-[2.3rem] sm:min-h-[2.6rem] leading-snug tracking-tight">
             {product.name}
           </h3>
 

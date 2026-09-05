@@ -214,7 +214,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder="Écrivez votre nom ou entreprise..."
-                    className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
+                    className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-base sm:text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
                       formErrors.customerName ? 'border-[#B8683C]' : 'border-[#EFE6D8]'
                     }`}
                   />
@@ -234,7 +234,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Ex: +225 07 00 00 00 00 / +221 77 000 00 00"
-                    className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
+                    className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-base sm:text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
                       formErrors.phone ? 'border-[#B8683C]' : 'border-[#EFE6D8]'
                     }`}
                   />
@@ -254,7 +254,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Écrivez votre e-mail..."
-                  className="w-full px-3.5 py-2.5 bg-[#FAF7F2] border border-[#EFE6D8] rounded-xl text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium"
+                  className="w-full px-3.5 py-2.5 bg-[#FAF7F2] border border-[#EFE6D8] rounded-xl text-base sm:text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium"
                 />
               </div>
 
@@ -270,7 +270,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
                     placeholder="Écrivez votre pays (ex: Côte d'Ivoire, Sénégal, France, Cameroun, Mali...)"
-                    className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
+                    className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-base sm:text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
                       formErrors.country ? 'border-[#B8683C]' : 'border-[#EFE6D8]'
                     }`}
                   />
@@ -289,7 +289,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="Écrivez votre ville (ex: Abidjan, Dakar, Douala, Yaoundé, Paris, Bamako...)"
-                    className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
+                    className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-base sm:text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
                       formErrors.city ? 'border-[#B8683C]' : 'border-[#EFE6D8]'
                     }`}
                   />
@@ -310,7 +310,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Écrivez votre quartier, rue, porte ou repère précis..."
-                  className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
+                  className={`w-full px-3.5 py-2.5 bg-[#FAF7F2] border rounded-xl text-base sm:text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium ${
                     formErrors.address ? 'border-[#B8683C]' : 'border-[#EFE6D8]'
                   }`}
                 />
@@ -329,7 +329,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   value={deliveryNotes}
                   onChange={(e) => setDeliveryNotes(e.target.value)}
                   placeholder="Écrivez toute précision utile (ex: numéro de contact secondaire, consignes pour le coursier, horaires souhaités...)"
-                  className="w-full px-3.5 py-2 bg-[#FAF7F2] border border-[#EFE6D8] rounded-xl text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium"
+                  className="w-full px-3.5 py-2 bg-[#FAF7F2] border border-[#EFE6D8] rounded-xl text-base sm:text-xs text-[#231B15] focus:outline-none focus:ring-1 focus:ring-[#B8683C] font-medium"
                 />
               </div>
             </div>
@@ -376,7 +376,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       referrerPolicy="no-referrer"
                     />
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-serif font-bold text-[#231B15] truncate">
+                      <h4 className="font-sans font-bold text-[#1E1916] truncate">
                         {item.product.name}
                       </h4>
                       <span className="text-[#7D7368] text-[11px]">
