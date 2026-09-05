@@ -64,10 +64,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
           {/* Shipping notice banner */}
           {items.length > 0 && (
-            <div className="bg-[#FAF7F2] px-4 py-3 border-b border-[#EFE6D8] text-xs flex items-center gap-2.5 text-[#7D7368]">
-              <Truck className="w-4 h-4 text-[#B8683C] shrink-0" />
-              <span>
-                <strong className="text-[#231B15]">Livraison :</strong> Frais calculés ultérieurement selon le mode d'expédition (voie routière ou aérienne). Pas de livraison offerte.
+            <div className="bg-[#FAF7F2] px-4 py-2.5 border-b border-[#EFE6D8] text-xs flex items-center justify-between gap-2 text-[#7D7368]">
+              <div className="flex items-center gap-2">
+                <Truck className="w-4 h-4 text-[#B8683C] shrink-0" />
+                <span className="font-semibold text-[#231B15]">Livraison :</span>
+              </div>
+              <span className="px-2.5 py-0.5 bg-white rounded-md text-[#B8683C] text-[11px] font-bold border border-[#EFE6D8]">
+                À définir plus tard
               </span>
             </div>
           )}
@@ -166,29 +169,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
 
                 <div className="flex justify-between items-center text-[#7D7368]">
-                  <span>Frais de livraison :</span>
+                  <span>Livraison :</span>
                   <span className="px-2.5 py-0.5 rounded-md bg-[#FAF7F2] text-[#B8683C] font-semibold text-[11px] border border-[#EFE6D8]">
                     À définir plus tard
                   </span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#EFE6D8] space-y-1 text-[11px] text-[#7D7368] leading-relaxed">
-                  <div className="flex items-center justify-between font-medium text-[#231B15]">
-                    <span>Options : Voie routière & Voie aérienne</span>
-                    <span className="text-[10px] text-[#2E6349] font-bold bg-[#EBF5EE] px-2 py-0.5 rounded-full border border-[#CDE5D5]">
-                      ✓ Payables à la réception
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-[#7D7368]">
-                    Vous choisirez votre mode d'expédition à l'étape suivante. Les frais de livraison seront à régler directement lors de la réception de votre colis.
-                  </p>
-                </div>
-
                 <div className="flex justify-between text-base font-bold text-[#231B15] pt-2 border-t border-[#EFE6D8]">
                   <div>
-                    <span>Total articles :</span>
+                    <span>Total :</span>
                     <span className="block text-[10px] font-normal text-[#7D7368]">
-                      (Hors frais de livraison à définir plus tard)
+                      Livraison à définir plus tard
                     </span>
                   </div>
                   <span className="text-[#B8683C] font-extrabold">{formatPrice(subtotal, currency)}</span>

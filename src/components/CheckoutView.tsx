@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { CartItem, Order, TrackingStep, Currency } from '../types';
 import { formatPrice } from '../data/products';
-import { getAirShippingDates, getAirShippingNote } from '../utils/shippingConfig';
 import {
   ArrowLeft,
   ShieldCheck,
   CheckCircle2,
   Truck,
-  Plane,
-  Sparkles,
-  Lock,
   MessageCircle,
-  Calendar,
-  AlertCircle,
-  Clock,
 } from 'lucide-react';
 
 interface CheckoutViewProps {
@@ -40,32 +33,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   const [address, setAddress] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
 
-  // Shipping mode: 'routiere' | 'aerienne'
-  const [shippingOption, setShippingOption] = useState<'routiere' | 'aerienne'>('routiere');
-  const [airDates, setAirDates] = useState<string[]>([]);
-  const [airNote, setAirNote] = useState<string>('');
-  const [selectedAirDate, setSelectedAirDate] = useState<string>('');
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
-
-  useEffect(() => {
-    const loadAirSchedule = () => {
-      const dates = getAirShippingDates();
-      setAirDates(dates);
-      setAirNote(getAirShippingNote());
-      if (dates.length > 0 && !selectedAirDate) {
-        setSelectedAirDate(dates[0]);
-      }
-    };
-    loadAirSchedule();
-
-    const handleUpdate = () => loadAirSchedule();
-    window.addEventListener('maroc_glow_shipping_dates_updated', handleUpdate);
-    return () => {
-      window.removeEventListener('maroc_glow_shipping_dates_updated', handleUpdate);
-    };
-  }, [selectedAirDate]);
 
   const subtotal = items.reduce((acc, item) => acc + item.product.priceFcfa * item.quantity, 0);
 
@@ -96,11 +65,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       ]
     } 2026 à ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-    const shippingOptionLabel =
-      shippingOption === 'aerienne'
-        ? `Voie aérienne (Avion)${selectedAirDate ? ` - Départ prévu : ${selectedAirDate}` : ''}`
-        : 'Voie routière (Transport terrestre)';
-
     const initialTimeline: TrackingStep[] = [
       {
         step: 'reçue',
@@ -113,29 +77,23 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       },
       {
         step: 'confirmée',
-        label: 'Contact & confirmation des frais',
+        label: 'Contact & confirmation de la livraison',
         description:
-          'Notre équipe vous contacte sur WhatsApp pour confirmer les frais de livraison selon le poids et valider le règlement.',
+          'Notre équipe vous contacte sur WhatsApp pour organiser la livraison de votre colis.',
         completed: false,
         current: false,
       },
       {
         step: 'préparation',
-        label: 'Préparation et pesée du colis',
+        label: 'Préparation du colis',
         description: 'Conditionnement soigné de vos produits marocains en atelier.',
         completed: false,
         current: false,
       },
       {
         step: 'expédiée',
-        label:
-          shippingOption === 'aerienne'
-            ? `Expédition fret aérien (${selectedAirDate || 'Prochain vol'})`
-            : 'Expédition par voie routière',
-        description:
-          shippingOption === 'aerienne'
-            ? 'Prise en charge à l’aéroport et vol cargo direct vers votre destination.'
-            : 'Acheminement par convoi routier sécurisé.',
+        label: 'Expédition de la commande',
+        description: 'Acheminement sécurisé vers votre destination.',
         completed: false,
         current: false,
       },
@@ -159,11 +117,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       deliveryNotes: deliveryNotes.trim() || undefined,
       paymentMethod: 'a_definir',
       paymentMethodLabel: 'À convenir avec l’administrateur (WhatsApp / Téléphone)',
-      shippingOption,
-      shippingOptionLabel,
-      airShippingDateSelected: shippingOption === 'aerienne' ? selectedAirDate : undefined,
+      shippingOption: 'standard',
+      shippingOptionLabel: 'À définir plus tard',
       shippingCostFcfa: 0,
-      shippingCostNote: 'Frais à définir plus tard (payables à la réception du colis)',
+      shippingCostNote: 'Livraison à définir plus tard',
       items: [...items],
       subtotalFcfa: subtotal,
       discountFcfa: 0,
@@ -171,12 +128,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       status: 'reçue',
       createdAt: now.toISOString(),
       formattedCreatedAt: formattedDate,
-      estimatedDelivery:
-        shippingOption === 'aerienne'
-          ? `Fret aérien (${selectedAirDate || 'Prochaine expédition'})`
-          : 'Voie routière (Selon planning de route)',
+      estimatedDelivery: 'À définir plus tard',
       trackingNumber: `MG-TRK-${randomNum}`,
-      carrier: shippingOption === 'aerienne' ? 'Fret Aérien Express Maroc' : 'Convoi Routier Régional',
+      carrier: 'Service Logistique Maroc Glow',
       timeline: initialTimeline,
     };
 
@@ -223,7 +177,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
           Finalisation de votre Commande
         </h1>
         <p className="text-xs sm:text-sm text-[#7D7368] mt-1">
-          Renseignez vos coordonnées complètes. Les frais de transport seront calculés et convenus avec vous selon le poids et le mode d'expédition choisi.
+          Renseignez vos coordonnées pour finaliser votre commande. Livraison à définir plus tard.
         </p>
       </div>
 
@@ -380,165 +334,24 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               </div>
             </div>
 
-            {/* Step 2: Mode d'Expédition (Voie routière & Voie aérienne) */}
-            <div className="bg-white p-6 sm:p-7 rounded-2xl border border-[#EFE6D8] shadow-xs space-y-5">
-              <div className="flex items-center gap-2.5 pb-3 border-b border-[#EFE6D8]">
-                <div className="w-6 h-6 bg-[#B8683C] text-white rounded-full flex items-center justify-center font-bold text-xs">
-                  2
+            {/* Livraison à définir plus tard */}
+            <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#EFE6D8] shadow-xs flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] border border-[#EFE6D8] flex items-center justify-center text-[#B8683C] shrink-0">
+                  <Truck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="font-serif font-bold text-lg text-[#231B15]">
-                    Mode d'Expédition
-                  </h2>
-                  <p className="text-[11px] text-[#7D7368]">
-                    Choisissez votre option. Frais de livraison à définir plus tard (payables à la réception).
+                  <h3 className="font-serif font-bold text-sm sm:text-base text-[#231B15]">
+                    Livraison
+                  </h3>
+                  <p className="text-xs text-[#7D7368]">
+                    Modalités convenues directement après validation
                   </p>
                 </div>
               </div>
-
-              {/* Notice informative et rassurante sur le paiement à la réception */}
-              <div className="p-4 rounded-xl bg-[#EBF5EE] border border-[#CDE5D5] flex items-start gap-3 text-xs text-[#231B15]">
-                <CheckCircle2 className="w-5 h-5 text-[#2E6349] shrink-0 mt-0.5" />
-                <div className="leading-relaxed space-y-1">
-                  <div className="font-bold text-[#2E6349] text-xs uppercase tracking-wider">
-                    Frais de livraison payables à la réception du colis !
-                  </div>
-                  <p className="text-[11px] text-[#2E6349]">
-                    Pas de livraison offerte. Les frais d'expédition sont <strong>à définir plus tard</strong> selon le poids réel et la destination, et vous les réglerez <strong>directement à la réception de votre colis</strong>.
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {/* Option 1: Voie routière */}
-                <div
-                  onClick={() => setShippingOption('routiere')}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                    shippingOption === 'routiere'
-                      ? 'border-[#B8683C] bg-[#FAF7F2]/90 ring-2 ring-[#B8683C]/40 shadow-xs'
-                      : 'border-[#EFE6D8] hover:border-[#7D7368] bg-white'
-                  }`}
-                >
-                  <div className="flex items-start gap-3.5">
-                    <input
-                      type="radio"
-                      name="shipping"
-                      checked={shippingOption === 'routiere'}
-                      onChange={() => setShippingOption('routiere')}
-                      className="mt-1 text-[#B8683C] focus:ring-[#B8683C]"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-[#231B15]">
-                          <Truck className="w-4 h-4 text-[#B8683C]" />
-                          <span>Voie routière (Transport Terrestre)</span>
-                        </div>
-                        <span className="px-2.5 py-0.5 rounded-full bg-[#FAF7F2] text-[#B8683C] text-[11px] font-bold border border-[#EFE6D8]">
-                          À définir plus tard
-                        </span>
-                      </div>
-                      <p className="text-xs text-[#7D7368] mt-1.5 leading-relaxed">
-                        Acheminement sécurisé par convoi routier. Solution économique idéale pour colis lourds ou volumineux. Frais payables à la réception du colis.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Option 2: Voie aérienne */}
-                <div
-                  onClick={() => setShippingOption('aerienne')}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                    shippingOption === 'aerienne'
-                      ? 'border-[#B8683C] bg-[#FAF7F2]/90 ring-2 ring-[#B8683C]/40 shadow-xs'
-                      : 'border-[#EFE6D8] hover:border-[#7D7368] bg-white'
-                  }`}
-                >
-                  <div className="flex items-start gap-3.5">
-                    <input
-                      type="radio"
-                      name="shipping"
-                      checked={shippingOption === 'aerienne'}
-                      onChange={() => setShippingOption('aerienne')}
-                      className="mt-1 text-[#B8683C] focus:ring-[#B8683C]"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-[#231B15]">
-                          <Plane className="w-4 h-4 text-[#B8683C]" />
-                          <span>Voie aérienne (Fret Cargo Avion)</span>
-                          <span className="bg-[#B8683C]/10 text-[#B8683C] text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                            ✈️ Rapide
-                          </span>
-                        </div>
-                        <span className="px-2.5 py-0.5 rounded-full bg-[#FAF7F2] text-[#B8683C] text-[11px] font-bold border border-[#EFE6D8]">
-                          À définir plus tard
-                        </span>
-                      </div>
-                      <p className="text-xs text-[#7D7368] mt-1.5 leading-relaxed">
-                        Acheminement prioritaire par avion cargo direct depuis le Maroc. Frais payables à la réception du colis.
-                      </p>
-
-                      {/* Prochaines dates d'expédition aérienne fixées par l'administrateur */}
-                      <div className="mt-3 p-3 bg-white rounded-xl border border-[#D4AF37]/50 shadow-2xs space-y-2">
-                        <div className="flex items-center gap-2 text-xs font-bold text-[#231B15]">
-                          <Calendar className="w-4 h-4 text-[#B8683C]" />
-                          <span>Prochaines dates de vol programmées :</span>
-                        </div>
-
-                        {airDates && airDates.length > 0 ? (
-                          <div className="flex flex-wrap gap-2 pt-1">
-                            {airDates.map((dateStr, idx) => {
-                              const isSelected = selectedAirDate === dateStr;
-                              return (
-                                <button
-                                  type="button"
-                                  key={idx}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setShippingOption('aerienne');
-                                    setSelectedAirDate(dateStr);
-                                  }}
-                                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                                    isSelected && shippingOption === 'aerienne'
-                                      ? 'bg-[#B8683C] text-white shadow-xs'
-                                      : 'bg-[#FAF7F2] text-[#231B15] border border-[#EFE6D8] hover:border-[#B8683C]'
-                                  }`}
-                                >
-                                  <span>{dateStr}</span>
-                                  {isSelected && shippingOption === 'aerienne' && (
-                                    <span className="text-[10px] bg-white/20 px-1.5 py-0.2 rounded">Choisi</span>
-                                  )}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <p className="text-xs text-[#7D7368] italic">
-                            Dates des prochains vols communiquées par l'administrateur.
-                          </p>
-                        )}
-
-                        {airNote && (
-                          <p className="text-[11px] text-[#7D7368] pt-1 border-t border-[#EFE6D8]">
-                            ℹ️ <strong className="text-[#231B15]">Note logistique :</strong> {airNote}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Note d'information de règlement (Remplacement complet du mode de paiement) */}
-            <div className="bg-[#FAF7F2] p-5 sm:p-6 rounded-2xl border border-[#EFE6D8] space-y-2">
-              <div className="flex items-center gap-2 text-[#231B15] font-bold text-xs sm:text-sm">
-                <MessageCircle className="w-4 h-4 text-[#B8683C]" />
-                <span>Règlement & Frais d'expédition (À convenir directement)</span>
-              </div>
-              <p className="text-xs text-[#7D7368] leading-relaxed">
-                Aucun paiement en ligne n'est prélevé à cette étape. Après enregistrement de votre commande, notre équipe commerciale vous contacte directement (via WhatsApp ou appel) pour vous confirmer le poids exact de vos colis, les frais d'expédition ({shippingOption === 'aerienne' ? 'voie aérienne' : 'voie routière'}) et les facilités de règlement adaptées à votre pays.
-              </p>
+              <span className="px-3 py-1.5 bg-[#FAF7F2] text-[#B8683C] border border-[#EFE6D8] rounded-full text-xs font-bold whitespace-nowrap shrink-0">
+                À définir plus tard
+              </span>
             </div>
           </div>
 
@@ -585,48 +398,17 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 </div>
 
                 <div className="flex justify-between items-center text-[#7D7368]">
-                  <span>Mode sélectionné :</span>
-                  <span className="font-semibold text-[#231B15] flex items-center gap-1">
-                    {shippingOption === 'aerienne' ? (
-                      <>
-                        <Plane className="w-3.5 h-3.5 text-[#B8683C]" />
-                        <span>Voie aérienne</span>
-                      </>
-                    ) : (
-                      <>
-                        <Truck className="w-3.5 h-3.5 text-[#B8683C]" />
-                        <span>Voie routière</span>
-                      </>
-                    )}
-                  </span>
-                </div>
-
-                {shippingOption === 'aerienne' && selectedAirDate && (
-                  <div className="flex justify-between text-[11px] text-[#7D7368] bg-[#FAF7F2] p-2 rounded-lg border border-[#EFE6D8]">
-                    <span>Vol programmé :</span>
-                    <span className="font-bold text-[#B8683C]">{selectedAirDate}</span>
-                  </div>
-                )}
-
-                <div className="flex justify-between items-center text-[#7D7368]">
-                  <span>Frais de livraison :</span>
-                  <span className="px-2 py-0.5 rounded-md bg-[#FAF7F2] text-[#B8683C] font-semibold text-[11px] border border-[#EFE6D8]">
+                  <span>Livraison :</span>
+                  <span className="px-2.5 py-0.5 rounded-md bg-[#FAF7F2] text-[#B8683C] font-semibold text-[11px] border border-[#EFE6D8]">
                     À définir plus tard
-                  </span>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-[#EBF5EE] border border-[#CDE5D5] text-[11px] text-[#2E6349] leading-relaxed flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 shrink-0 text-[#2E6349]" />
-                  <span>
-                    <strong>Payable à la réception :</strong> Vous réglerez les frais de livraison lors de la remise de votre colis.
                   </span>
                 </div>
 
                 <div className="flex justify-between text-base font-bold text-[#231B15] pt-3 border-t border-[#EFE6D8]">
                   <div>
-                    <span>Total articles :</span>
-                    <span className="block text-[10px] font-normal text-[#7D7368]">
-                      (Hors frais de livraison à définir plus tard)
+                    <span>Total :</span>
+                    <span className="block text-[11px] font-normal text-[#7D7368]">
+                      Livraison à définir plus tard
                     </span>
                   </div>
                   <span className="text-[#B8683C] text-xl font-black">{formatPrice(subtotal, currency)}</span>

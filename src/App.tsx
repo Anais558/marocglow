@@ -77,6 +77,29 @@ export default function App() {
     }
   });
 
+  // Client-specific order tracking: store only the orders placed or searched by this device/customer
+  const [myOrderIds, setMyOrderIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('maroc_glow_my_order_ids');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const handleAddMyOrderId = (orderId: string) => {
+    setMyOrderIds((prev) => {
+      if (prev.includes(orderId)) return prev;
+      const updated = [orderId, ...prev];
+      try {
+        localStorage.setItem('maroc_glow_my_order_ids', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+  };
+
   // Dynamic Database Sync State
   const [isSyncingDb, setIsSyncingDb] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
@@ -280,6 +303,7 @@ export default function App() {
   // Create new order
   const handleCreateOrder = async (newOrder: Order) => {
     setOrders((prev) => [newOrder, ...prev]);
+    handleAddMyOrderId(newOrder.id);
     setCartItems([]);
     setRecentlyPlacedOrder(newOrder);
     try {
@@ -364,6 +388,8 @@ export default function App() {
         {currentView === 'tracking' && (
           <OrderTrackingView
             orders={orders}
+            myOrderIds={myOrderIds}
+            onAddMyOrderId={handleAddMyOrderId}
             highlightOrderId={highlightOrderId}
             onGoToCatalogue={() => handleNavigate('catalogue')}
             currency={currency}

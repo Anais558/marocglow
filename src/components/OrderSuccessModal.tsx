@@ -24,13 +24,11 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const shippingDisplay = order.shippingOptionLabel || (order.shippingOption === 'aerienne' ? 'Voie aérienne (Avion)' : 'Voie routière');
-
   const whatsappMessage = encodeURIComponent(
     `Bonjour Maroc Glow ✨\nJe viens de valider ma commande #${order.id}.\nArticles : *${formatPrice(
       order.totalFcfa,
       currency
-    )}*.\nDestination : ${order.city}${order.country ? `, ${order.country}` : ''}\nMode d'expédition : ${shippingDisplay}\nFrais de livraison : À définir plus tard (payables à la réception du colis).\nMerci de confirmer la prise en charge !`
+    )}*.\nDestination : ${order.city}${order.country ? `, ${order.country}` : ''}\nLivraison : À définir plus tard.\nMerci de confirmer la prise en charge !`
   );
 
   return (
@@ -51,7 +49,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
         </h2>
 
         <p className="text-xs sm:text-sm text-[#7D7368] mb-6 leading-relaxed">
-          Votre commande a été transmise à notre service commercial. Nous allons vous contacter directement pour convenir des frais de livraison et de l'expédition.
+          Votre commande a été transmise à notre service commercial. Nous allons vous contacter directement pour convenir de la livraison.
         </p>
 
         {/* Order ID & Details Card */}
@@ -81,24 +79,12 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
           </div>
 
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#7D7368]">Mode d'expédition :</span>
-            <span className="font-bold text-[#B8683C]">{shippingDisplay}</span>
-          </div>
-
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-[#7D7368]">Frais de livraison :</span>
-            <div className="text-right">
-              <span className="font-semibold text-[#B8683C] text-[11px] bg-white px-2 py-0.5 rounded border border-[#EFE6D8]">
-                À définir plus tard
-              </span>
-              <span className="block text-[10px] font-bold text-[#2E6349] mt-0.5">
-                ✓ Payable à la réception du colis
-              </span>
-            </div>
+            <span className="text-[#7D7368]">Livraison :</span>
+            <span className="font-bold text-[#B8683C]">À définir plus tard</span>
           </div>
 
           <div className="flex items-center justify-between text-xs pt-2 border-t border-[#EFE6D8]">
-            <span className="text-[#7D7368]">Total articles :</span>
+            <span className="text-[#7D7368]">Total :</span>
             <span className="font-extrabold text-[#231B15] text-base">{formatPrice(order.totalFcfa, currency)}</span>
           </div>
         </div>

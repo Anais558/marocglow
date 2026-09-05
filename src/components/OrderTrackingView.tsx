@@ -20,6 +20,8 @@ import {
 
 interface OrderTrackingViewProps {
   orders: Order[];
+  myOrderIds?: string[];
+  onAddMyOrderId?: (orderId: string) => void;
   highlightOrderId?: string | null;
   onGoToCatalogue: () => void;
   currency?: Currency;
@@ -27,6 +29,8 @@ interface OrderTrackingViewProps {
 
 export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
   orders,
+  myOrderIds = [],
+  onAddMyOrderId,
   highlightOrderId,
   onGoToCatalogue,
   currency = 'FCFA',
@@ -35,22 +39,36 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchError, setSearchError] = useState('');
 
-  // Initial order selection
+  // Only the customer's own orders (placed or tracked on this device)
+  const myOrders = orders.filter((o) => myOrderIds.includes(o.id));
+
+  // Initial order selection: ONLY own orders or explicit highlightOrderId
   useEffect(() => {
     if (highlightOrderId) {
       const match = orders.find((o) => o.id.toLowerCase() === highlightOrderId.toLowerCase());
       if (match) {
         setSelectedOrder(match);
         setSearchQuery(match.id);
+        onAddMyOrderId?.(match.id);
         return;
       }
     }
 
-    if (orders.length > 0 && !selectedOrder) {
-      setSelectedOrder(orders[0]);
-      setSearchQuery(orders[0].id);
+    if (selectedOrder) {
+      // Keep selected order in sync with latest order data (e.g. status updates from admin)
+      const updated = orders.find((o) => o.id === selectedOrder.id);
+      if (updated && updated !== selectedOrder) {
+        setSelectedOrder(updated);
+      }
+      return;
     }
-  }, [orders, highlightOrderId]);
+
+    // Default to the user's latest own order if they have one
+    if (myOrders.length > 0) {
+      setSelectedOrder(myOrders[0]);
+      setSearchQuery(myOrders[0].id);
+    }
+  }, [orders, highlightOrderId, myOrderIds]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,18 +77,23 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
     const cleanQuery = searchQuery.trim().toLowerCase();
     if (!cleanQuery) return;
 
-    const found = orders.find(
-      (o) =>
-        o.id.toLowerCase().includes(cleanQuery) ||
-        o.phone.replace(/\s+/g, '').includes(cleanQuery.replace(/\s+/g, '')) ||
-        (o.customerName && o.customerName.toLowerCase().includes(cleanQuery))
-    );
+    const digitsOnly = cleanQuery.replace(/\D/g, '');
+
+    const found = orders.find((o) => {
+      const oId = o.id.toLowerCase();
+      const oPhoneDigits = o.phone.replace(/\D/g, '');
+      const idMatch = oId === cleanQuery || oId.replace('mg-', '') === cleanQuery || oId.includes(cleanQuery);
+      const phoneMatch = digitsOnly.length >= 6 && oPhoneDigits.includes(digitsOnly);
+      return idMatch || phoneMatch;
+    });
 
     if (found) {
       setSelectedOrder(found);
+      onAddMyOrderId?.(found.id);
+      setSearchError('');
     } else {
       setSearchError(
-        `Aucune commande trouvée pour "${searchQuery}". Essayez l'un des exemples ci-dessous.`
+        `Aucune commande trouvée pour "${searchQuery}". Veuillez vérifier votre numéro de commande (ex: MG-2026-XXXX) ou votre numéro de téléphone.`
       );
     }
   };
@@ -126,15 +149,15 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
         </div>
 
         <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#231B15] mb-2">
-          Suivi de votre Rituel
+          Suivi de votre Commande
         </h1>
         <p className="text-xs sm:text-sm text-[#7D7368]">
-          Entrez votre numéro de commande (ex : <strong>MG-2026-8842</strong>) ou votre numéro de téléphone pour suivre chaque étape de préparation et de livraison.
+          Entrez votre numéro de référence (reçu lors de votre commande) ou votre numéro de téléphone pour suivre chaque étape de préparation et de livraison.
         </p>
       </div>
 
-      {/* Search Bar & Example Clickable Orders */}
-      <div className="max-w-2xl mx-auto mb-12 space-y-3">
+      {/* Search Bar & Customer's own orders pills */}
+      <div className="max-w-2xl mx-auto mb-10 space-y-3">
         <form onSubmit={handleSearch} className="flex gap-2">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-[#7D7368] absolute left-4 top-1/2 -translate-y-1/2" />
@@ -142,7 +165,7 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Numéro de commande (MG-2026-XXXX) ou Téléphone..."
+              placeholder="Numéro de commande (ex: MG-2026-XXXX) ou Téléphone..."
               className="w-full pl-11 pr-4 py-3 bg-white border border-[#EFE6D8] rounded-xl text-xs sm:text-sm text-[#231B15] font-medium shadow-xs focus:outline-none focus:ring-1 focus:ring-[#B8683C]"
             />
           </div>
@@ -160,29 +183,38 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
           </p>
         )}
 
-        {/* Demo order quick selection pills */}
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          <span className="text-[11px] font-semibold text-[#7D7368]">
-            Tester avec une commande :
-          </span>
-          {orders.map((ord) => (
-            <button
-              key={ord.id}
-              onClick={() => {
-                setSelectedOrder(ord);
-                setSearchQuery(ord.id);
-                setSearchError('');
-              }}
-              className={`text-[11px] px-3 py-1 rounded-full font-medium transition-all cursor-pointer ${
-                selectedOrder?.id === ord.id
-                  ? 'bg-[#231B15] text-white font-bold shadow-xs'
-                  : 'bg-white text-[#231B15] border border-[#EFE6D8] hover:bg-[#FAF7F2]'
-              }`}
-            >
-              #{ord.id} ({ord.customerName})
-            </button>
-          ))}
-        </div>
+        {/* Customer's Own Orders Pills (ONLY the current user's orders) */}
+        {myOrders.length > 0 && (
+          <div className="space-y-1.5 pt-1">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-[#7D7368]">
+              <Package className="w-3.5 h-3.5 text-[#B8683C]" />
+              <span>Vos commandes enregistrées ({myOrders.length}) :</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {myOrders.map((ord) => (
+                <button
+                  key={ord.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedOrder(ord);
+                    setSearchQuery(ord.id);
+                    setSearchError('');
+                  }}
+                  className={`text-xs px-3.5 py-1.5 rounded-full font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+                    selectedOrder?.id === ord.id
+                      ? 'bg-[#231B15] text-white font-bold shadow-xs'
+                      : 'bg-white text-[#231B15] border border-[#EFE6D8] hover:bg-[#FAF7F2]'
+                  }`}
+                >
+                  <span>#{ord.id}</span>
+                  <span className="text-[10px] opacity-75 font-normal">
+                    ({ord.status.toUpperCase()})
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main Order Details & 5-Step Timeline */}
@@ -323,7 +355,7 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
                 <div className="flex items-center gap-2 text-[#7D7368]">
                   <Truck className="w-4 h-4 text-[#B8683C] shrink-0" />
                   <span>
-                    Mode d'expédition : <strong className="text-[#231B15]">{selectedOrder.shippingOptionLabel || (selectedOrder.shippingOption === 'aerienne' ? 'Voie aérienne' : 'Voie routière')}</strong>
+                    Livraison : <strong className="text-[#231B15]">À définir plus tard</strong>
                   </span>
                 </div>
               </div>
@@ -371,24 +403,15 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
                     <span>- {formatPrice(selectedOrder.discountFcfa, currency)}</span>
                   </div>
                 )}
-                <div className="flex justify-between items-start text-[#7D7368]">
-                  <span>Frais de livraison :</span>
-                  <div className="text-right">
-                    <span className="text-[#B8683C] font-semibold block">
-                      {selectedOrder.shippingCostFcfa && selectedOrder.shippingCostFcfa > 0
-                        ? formatPrice(selectedOrder.shippingCostFcfa, currency)
-                        : 'À définir plus tard'}
-                    </span>
-                    <span className="text-[10px] font-bold text-[#2E6349] block">
-                      Payable à la réception du colis
-                    </span>
-                  </div>
+                <div className="flex justify-between items-center text-[#7D7368]">
+                  <span>Livraison :</span>
+                  <span className="text-[#B8683C] font-semibold">À définir plus tard</span>
                 </div>
                 <div className="flex justify-between text-base font-bold text-[#231B15] pt-2 border-t border-[#EFE6D8]">
                   <div>
-                    <span>Total articles :</span>
+                    <span>Total :</span>
                     <span className="block text-[10px] font-normal text-[#7D7368]">
-                      (Livraison à régler à la réception)
+                      Livraison à définir plus tard
                     </span>
                   </div>
                   <span className="text-[#B8683C] text-lg font-black">{formatPrice(selectedOrder.totalFcfa, currency)}</span>
@@ -411,16 +434,28 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
           </div>
         </div>
       ) : (
-        <div className="text-center py-16 bg-white rounded-2xl border border-[#EFE6D8] max-w-md mx-auto">
-          <p className="text-xs text-[#7D7368] mb-4">
-            Veuillez entrer un numéro de commande valide pour afficher les détails.
-          </p>
-          <button
-            onClick={onGoToCatalogue}
-            className="px-5 py-2.5 bg-[#231B15] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#B8683C] transition-colors cursor-pointer"
-          >
-            Aller au Catalogue
-          </button>
+        <div className="text-center py-12 px-6 bg-white rounded-2xl border border-[#EFE6D8] max-w-lg mx-auto shadow-xs space-y-4">
+          <div className="w-14 h-14 rounded-full bg-[#FAF7F2] border border-[#EFE6D8] flex items-center justify-center text-[#B8683C] mx-auto">
+            <Search className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="font-serif font-bold text-lg text-[#231B15] mb-1">
+              Rechercher votre commande
+            </h3>
+            <p className="text-xs text-[#7D7368] leading-relaxed max-w-md mx-auto">
+              Saisissez votre numéro de commande reçu lors de votre validation ou votre numéro de téléphone dans la barre de recherche ci-dessus pour afficher son statut d'acheminement.
+            </p>
+          </div>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={onGoToCatalogue}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#231B15] hover:bg-[#B8683C] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-xs"
+            >
+              <span>Découvrir nos produits</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
     </div>
