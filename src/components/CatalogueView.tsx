@@ -35,8 +35,6 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'price-asc' | 'price-desc' | 'popular'>('recent');
-  const [onlyBio, setOnlyBio] = useState<boolean>(false);
-  const [onlyInStock, setOnlyInStock] = useState<boolean>(false);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
@@ -62,12 +60,6 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
           }
         }
 
-        // Bio filter
-        if (onlyBio && !p.isBio) return false;
-
-        // In Stock filter
-        if (onlyInStock && !p.inStock) return false;
-
         return true;
       })
       .sort((a, b) => {
@@ -77,7 +69,7 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
         // Default recent
         return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime();
       });
-  }, [products, searchQuery, selectedCategory, sortBy, onlyBio, onlyInStock]);
+  }, [products, searchQuery, selectedCategory, sortBy]);
 
   // Sort categories so that categories with items come first, and those with 0 come at the end
   const sortedCategories = useMemo(() => {
@@ -224,30 +216,11 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
               </div>
             </div>
 
-            {/* Quick toggles & Sort bar */}
+            {/* Sort bar */}
             <div className="pt-3 border-t border-[#EFE6D8] flex flex-wrap items-center justify-between gap-3 text-xs">
-              {/* Checkbox filters */}
-              <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2 cursor-pointer select-none text-[#7D7368] hover:text-[#231B15] font-medium">
-                  <input
-                    type="checkbox"
-                    checked={onlyBio}
-                    onChange={(e) => setOnlyBio(e.target.checked)}
-                    className="rounded border-[#EFE6D8] text-[#B8683C] focus:ring-[#B8683C] accent-[#B8683C]"
-                  />
-                  <span>100% Bio</span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer select-none text-[#7D7368] hover:text-[#231B15] font-medium">
-                  <input
-                    type="checkbox"
-                    checked={onlyInStock}
-                    onChange={(e) => setOnlyInStock(e.target.checked)}
-                    className="rounded border-[#EFE6D8] text-[#B8683C] focus:ring-[#B8683C] accent-[#B8683C]"
-                  />
-                  <span>En stock uniquement</span>
-                </label>
-              </div>
+              <span className="text-[#7D7368] font-medium">
+                {filteredProducts.length} rituel{filteredProducts.length > 1 ? 's' : ''} disponible{filteredProducts.length > 1 ? 's' : ''}
+              </span>
 
               {/* Sort selector */}
               <div className="flex items-center gap-2 ml-auto">
@@ -353,8 +326,6 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
               onClick={() => {
                 onSearchChange('');
                 setSelectedCategory('all');
-                setOnlyBio(false);
-                setOnlyInStock(false);
               }}
               className="px-6 py-2.5 bg-[#231B15] hover:bg-[#B8683C] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-xs cursor-pointer"
             >
