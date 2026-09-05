@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Product, Currency } from '../types';
+import { Product, Currency, CartItem } from '../types';
 import { formatPrice, STORE_PHONE_CLEAN } from '../data/products';
 import { ProductCard } from './ProductCard';
 import {
@@ -19,8 +19,10 @@ import {
 interface ProductDetailViewProps {
   product: Product;
   allProducts: Product[];
+  cartItems?: CartItem[];
   onBack: () => void;
   onAddToCart: (product: Product, quantity?: number) => void;
+  onUpdateQuantity?: (productId: string, quantity: number) => void;
   onInstantBuy: (product: Product, quantity?: number) => void;
   onViewProduct: (product: Product) => void;
   currency?: Currency;
@@ -29,8 +31,10 @@ interface ProductDetailViewProps {
 export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   product,
   allProducts,
+  cartItems = [],
   onBack,
   onAddToCart,
+  onUpdateQuantity,
   onInstantBuy,
   onViewProduct,
   currency = 'FCFA',
@@ -83,6 +87,17 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
     // Real store WhatsApp link
     return `https://wa.me/${STORE_PHONE_CLEAN}?text=${message}`;
   }, [product, quantity, totalAmountFcfa, currency]);
+
+  // Lookup map for fast quantity retrieval
+  const cartQuantityMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const item of cartItems) {
+      if (item?.product?.id) {
+        map[item.product.id] = (map[item.product.id] || 0) + item.quantity;
+      }
+    }
+    return map;
+  }, [cartItems]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -372,6 +387,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               product={simProd}
               onViewDetails={onViewProduct}
               onAddToCart={(p) => onAddToCart(p, 1)}
+              onUpdateQuantity={onUpdateQuantity}
+              quantityInCart={cartQuantityMap[simProd.id] || 0}
               currency={currency}
             />
           ))}

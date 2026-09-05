@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Product, Category, Currency } from '../types';
+import { Product, Category, Currency, CartItem } from '../types';
 import { CATEGORIES } from '../data/products';
 import { ProductCard } from './ProductCard';
 import { Search, SlidersHorizontal, Sparkles, X, ArrowUpDown, CheckCircle2, Shield, Leaf, HeartHandshake, RefreshCw, Plus, ShieldCheck } from 'lucide-react';
@@ -7,8 +7,10 @@ import { Search, SlidersHorizontal, Sparkles, X, ArrowUpDown, CheckCircle2, Shie
 interface CatalogueViewProps {
   products: Product[];
   categories?: Category[];
+  cartItems?: CartItem[];
   onViewDetails: (product: Product) => void;
   onAddToCart: (product: Product) => void;
+  onUpdateQuantity?: (productId: string, quantity: number) => void;
   addedProductId: string | null;
   searchQuery: string;
   onSearchChange: (q: string) => void;
@@ -20,8 +22,10 @@ interface CatalogueViewProps {
 export const CatalogueView: React.FC<CatalogueViewProps> = ({
   products,
   categories = CATEGORIES,
+  cartItems = [],
   onViewDetails,
   onAddToCart,
+  onUpdateQuantity,
   addedProductId,
   searchQuery,
   onSearchChange,
@@ -95,6 +99,17 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
       return 0;
     });
   }, [categories, products]);
+
+  // Lookup map for fast quantity retrieval
+  const cartQuantityMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const item of cartItems) {
+      if (item?.product?.id) {
+        map[item.product.id] = (map[item.product.id] || 0) + item.quantity;
+      }
+    }
+    return map;
+  }, [cartItems]);
 
   return (
     <div className="pb-20 w-full max-w-full overflow-x-hidden">
@@ -289,6 +304,8 @@ export const CatalogueView: React.FC<CatalogueViewProps> = ({
                 product={product}
                 onViewDetails={onViewDetails}
                 onAddToCart={onAddToCart}
+                onUpdateQuantity={onUpdateQuantity}
+                quantityInCart={cartQuantityMap[product.id] || 0}
                 isAddedJustNow={addedProductId === product.id}
                 currency={currency}
               />

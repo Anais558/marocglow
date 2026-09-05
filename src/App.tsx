@@ -323,8 +323,10 @@ export default function App() {
           <CatalogueView
             products={products}
             categories={categories}
+            cartItems={cartItems}
             onViewDetails={handleViewProductDetails}
             onAddToCart={(p) => handleAddToCart(p, 1)}
+            onUpdateQuantity={handleUpdateQuantity}
             addedProductId={addedProductId}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
@@ -338,8 +340,10 @@ export default function App() {
           <ProductDetailView
             product={selectedProduct}
             allProducts={products}
+            cartItems={cartItems}
             onBack={() => handleNavigate('catalogue')}
             onAddToCart={handleAddToCart}
+            onUpdateQuantity={handleUpdateQuantity}
             onInstantBuy={handleInstantBuy}
             onViewProduct={handleViewProductDetails}
             currency={currency}
